@@ -1,0 +1,30 @@
+{
+  "name": "bookbum",
+  "version": "1.0.0",
+  "description": "Simple S3 Audiobook Player",
+  "main": "app.js",
+  "dependencies": {
+    "aws-sdk": "^2.437.0",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathansherburn/bookbum.git"
+  },
+  "keywords": [
+    "Audiobook",
+    "Stream",
+    "S3"
+  ],
+  "author": "Nathan Sherburn",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/nathansherburn/bookbum/issues"
+  },
+  "homepage": "https://github.com/nathansherburn/bookbum#readme"
+}
