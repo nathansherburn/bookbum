@@ -1,0 +1,72 @@
+html,
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  background-color: black;
+  color: white;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: 0;
+  justify-content: center;
+  border: 2px solid white;
+  padding: 8px;
+  margin: 2px;
+  cursor: pointer;
+  outline: none;
+}
+
+.selected {
+  background-color: white;
+  color: black;
+}
+
+#slider {
+  border: 2px solid white;
+  position: relative;
+  margin: 2px;
+  background: black;
+}
+
+#progress-bar {
+  position: absolute;
+  height: 100%;
+  background: white;
+}
+
+#slider .progress {
+  text-align: center;
+  mix-blend-mode: difference;
+  color: white;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.center-align {
+  align-items: center;
+}
+
+#book-info,
+#book-list {
+  margin: 2px;
+}
