@@ -1,14 +1,16 @@
-const player = document.getElementById('player');
 const audioEl = document.createElement('audio')
+
+const player = document.getElementById('player')
 const totalTimeEl = document.getElementById('total-time')
 const currentTimeEl = document.getElementById('current-time')
-const sliderEl = document.getElementById("slider");
+const sliderEl = document.getElementById("slider")
 const progressBarEl = document.getElementById('progress-bar')
-const togglePlayEl = document.getElementById("toggle-play");
+const togglePlayEl = document.getElementById("toggle-play")
 const bookListEl = document.getElementById('book-list')
 const playbackRateEl = document.getElementById('playback-rate')
 const bookInfoEl = document.getElementById('book-info')
 const sleepTimerEl = document.getElementById('sleep-timer')
+
 let previousSeekValue
 let seekMagnitude = 0
 let sleepTimer
@@ -24,6 +26,7 @@ const bookbum = {
       })
       .catch(function (err) {
         console.error(err)
+        goToLogin()
       })
   }
 }
@@ -34,6 +37,10 @@ function init() {
   listTitles()
   retrieveCurrentBook()
   audioEl.ontimeupdate = updateTime
+}
+
+function goToLogin() {
+  window.location.replace('/login.html')
 }
 
 function retrieveCurrentBook() {
@@ -60,7 +67,7 @@ function updateBookSettings() {
     playbackRate: audioEl.playbackRate,
     volume: audioEl.volume
   }
-  localStorage.setItem(bookInfoEl.innerText, JSON.stringify(settings));
+  localStorage.setItem(bookInfoEl.innerText, JSON.stringify(settings))
 }
 
 function seek(event) {
@@ -100,6 +107,7 @@ function listTitles(books) {
     .then(function (books) {
       books.forEach(function (book) {
         let div = document.createElement('div')
+        div.classList.add('book')
         div.innerText = book.Key
         div.onclick = function (event) {
           getBookUrl(event.target.innerText).then(play)
@@ -124,7 +132,7 @@ function getBookUrl(book) {
         }
         updateTotalTime()
         updateTime()
-        playbackRateEl.innerText = 'x' + audioEl.playbackRate.toFixed(2);
+        playbackRateEl.innerText = 'X' + audioEl.playbackRate.toFixed(2)
       }
     })
 }
@@ -133,7 +141,7 @@ function updateTotalTime() {
   totalTimeEl.innerText = new Date(audioEl.duration * 1000)
     .toISOString()
     .substr(11, 8)
-};
+}
 
 
 function canPlayBook() {
@@ -149,26 +157,26 @@ function togglePlay() {
 function play() {
   audioEl.volume = 1.0
   audioEl.play()
-  togglePlayEl.innerText = 'pause'
+  togglePlayEl.innerText = 'PAUSE'
   startProgressCheckInterval()
 }
 
 function pause() {
   audioEl.pause()
-  togglePlayEl.innerText = 'play'
+  togglePlayEl.innerText = 'PLAY'
   clearInterval(progressCheckInterval)
 }
 
 function setVolume(volume) {
-  audioEl.volume = volume;
+  audioEl.volume = volume
   updateBookSettings()
 }
 
 function changePlaybackRate() {
   audioEl.playbackRate = (audioEl.playbackRate > 1.75)
     ? 1
-    : audioEl.playbackRate + 0.25;
-  playbackRateEl.innerText = 'x' + audioEl.playbackRate.toFixed(2);
+    : audioEl.playbackRate + 0.25
+  playbackRateEl.innerText = 'X' + audioEl.playbackRate.toFixed(2)
   updateBookSettings()
 }
 
@@ -190,7 +198,7 @@ function fadeOut() {
   fadeOutInterval = setInterval(function () {
     if (audioEl.volume <= 0.1) {
       audioEl.pause()
-      togglePlayEl.innerText = 'play'
+      togglePlayEl.innerText = 'PLAY'
       clearInterval(fadeInterval)
       return
     }

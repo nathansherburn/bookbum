@@ -1,15 +1,25 @@
 html,
 body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   display: flex;
   flex-direction: column;
   font-family: sans-serif;
   background-color: black;
   color: white;
-  height: 100%;
-  margin: 0;
-  padding: 0;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  padding: 4px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1em;
 }
 
 .button {
@@ -18,7 +28,7 @@ body {
   flex-basis: 0;
   justify-content: center;
   border: 2px solid white;
-  padding: 8px;
+  padding: 8px 0;
   margin: 2px;
   cursor: pointer;
   outline: none;
@@ -69,4 +79,8 @@ body {
 #book-info,
 #book-list {
   margin: 2px;
+}
+
+.book {
+  padding: 4px 0;
 }
