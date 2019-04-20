@@ -5,12 +5,13 @@ const express = require('express');
 const session = require('express-session');
 const LokiStore = require('connect-loki')(session);
 const bodyParser = require('body-parser');
+const cfsign = require('aws-cloudfront-sign');
 
 let app, s3;
 
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY
 });
 
 app = express();
@@ -27,7 +28,7 @@ app.use(
   })
 );
 
-var auth = function(req, res, next) {
+let auth = function(req, res, next) {
   if (req.session && req.session.isAuthenticated) {
     return next();
   } else {
@@ -36,7 +37,6 @@ var auth = function(req, res, next) {
 };
 
 app.post('/login', function(req, res) {
-  console.log(req.body);
   let userMatch = req.body.username === 'admin';
   let passwordMatch = req.body.password === process.env.PASSWORD;
   if (userMatch && passwordMatch) {
@@ -65,18 +65,16 @@ app.get('/api/v1/list-books', auth, function(req, res, next) {
 });
 
 app.get('/api/v1/book/:name', auth, function(req, res, next) {
-  s3.getSignedUrl(
-    'getObject',
-    {
-      Bucket: 'bookbum',
-      Key: req.params.name,
-      Expires: 60 * 5
-    },
-    function(err, url) {
-      if (err) next();
-      res.send({ url });
-    }
+  let signingParams = {
+    keypairId: process.env.CF_ACCESS_KEY.replace(/\\n/g, '\n'),
+    privateKeyString: process.env.CF_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    expireTime: new Date().getTime() + 60 * 60 * 3
+  };
+  let url = cfsign.getSignedUrl(
+    'http://d3g3vsgnvsbggq.cloudfront.net/' + req.params.name,
+    signingParams
   );
+  res.send({ url });
 });
 
 app.listen(process.env.PORT);
