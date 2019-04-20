@@ -52,7 +52,7 @@ app.get('/logout', function(req, res) {
   res.send('goodbye');
 });
 
-app.get('/api/v1/list-books', auth, function(req, res, next) {
+app.get('/list-books', auth, function(req, res, next) {
   s3.listObjects(
     {
       Bucket: 'bookbum'
@@ -64,7 +64,7 @@ app.get('/api/v1/list-books', auth, function(req, res, next) {
   );
 });
 
-app.get('/api/v1/book/:name', auth, function(req, res, next) {
+app.get('/book/:name', auth, function(req, res, next) {
   let signingParams = {
     keypairId: process.env.CF_ACCESS_KEY.replace(/\\n/g, '\n'),
     privateKeyString: process.env.CF_PRIVATE_KEY.replace(/\\n/g, '\n'),

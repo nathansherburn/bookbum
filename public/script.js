@@ -18,25 +18,18 @@ let fadeOutInterval;
 let currentBook;
 let progressCheckInterval;
 
-const bookbum = {
-  get: function(resource) {
-    return fetch('/api/v1/' + resource)
-      .then(function(response) {
-        return response.json();
-      })
-      .catch(function(err) {
-        console.error(err);
-        goToLogin();
-      });
-  }
-};
+function bookbum(resource) {
+  return fetch('/' + resource)
+    .then(response => response.json())
+    .catch(err => goToLogin());
+}
 
 init();
 
 function init() {
   listTitles();
   retrieveCurrentBook();
-  audioEl.ontimeupdate = updateTime;
+  audioEl.ontimeupdate = () => updateTime(audioEl.currentTime);
 }
 
 function goToLogin() {
@@ -46,7 +39,7 @@ function goToLogin() {
 function retrieveCurrentBook() {
   currentBook = localStorage.getItem('currentBook');
   if (currentBook) {
-    getBookUrl(currentBook).then(updateTime);
+    getBookUrl(currentBook).then(() => updateTime(audioEl.currentTime));
   }
 }
 
@@ -73,11 +66,7 @@ function updateBookSettings() {
 function seek(event) {
   if (previousSeekValue) {
     seekMagnitude += event.touches[0].clientX - previousSeekValue;
-    let newTime = audioEl.currentTime + seekMagnitude * 10;
-    progressBarEl.style.width = (100 * newTime) / audioEl.duration + '%';
-    currentTimeEl.innerText = new Date(newTime * 1000)
-      .toISOString()
-      .substr(11, 8);
+    updateTime(audioEl.currentTime + seekMagnitude * 10);
     previousSeekValue = event.touches[0].clientX;
   } else {
     seekMagnitude = 0;
@@ -86,52 +75,60 @@ function seek(event) {
   }
 }
 
-function stopSeek(event) {
+function stopSeek() {
   audioEl.currentTime = audioEl.currentTime + seekMagnitude * 10;
-  audioEl.ontimeupdate = updateTime;
+  audioEl.ontimeupdate = () => updateTime(audioEl.currentTime);
   previousSeekValue = null;
   updateBookSettings();
 }
 
-function updateTime() {
-  let percentageProgress = (100 * audioEl.currentTime) / audioEl.duration;
+function updateTime(newTime) {
+  let percentageProgress = (100 * newTime) / audioEl.duration;
   progressBarEl.style.width = percentageProgress + '%';
-  currentTimeEl.innerText = new Date(audioEl.currentTime * 1000)
+  currentTimeEl.innerText = new Date(newTime * 1000)
     .toISOString()
     .substr(11, 8);
 }
 
-function listTitles(books) {
-  bookbum.get('list-books').then(function(books) {
+function listTitles() {
+  bookbum('list-books').then(function(books) {
     books.forEach(function(book) {
       let div = document.createElement('div');
       div.classList.add('book');
       div.innerText = book.Key;
-      div.onclick = function(event) {
-        getBookUrl(event.target.innerText).then(play);
-      };
+      div.onclick = event =>
+        getBookUrl(event.target.innerText)
+          .then(loadBook)
+          .then(play);
       bookListEl.appendChild(div);
     });
   });
 }
 
 function getBookUrl(book) {
+  currentBook = book;
   localStorage.setItem('currentBook', book);
   bookInfoEl.innerText = book;
-  return bookbum.get('book/' + book).then(function(url) {
-    audioEl.src = url.url;
-    audioEl.onloadedmetadata = function() {
-      let bookSettings = JSON.parse(localStorage.getItem(book));
-      if (bookSettings) {
-        audioEl.currentTime = bookSettings.currentTime || 0.0;
-        audioEl.volume = bookSettings.volume || 1.0;
-        audioEl.playbackRate = bookSettings.playbackRate || 1.0;
-      }
-      updateTotalTime();
-      updateTime();
-      playbackRateEl.innerText = 'X' + audioEl.playbackRate.toFixed(2);
-    };
-  });
+  return bookbum('book/' + book);
+}
+
+function loadBook(url) {
+  audioEl.src = url.url;
+  audioEl.onloadedmetadata = function() {
+    loadSettings();
+    updateTotalTime();
+    updateTime(audioEl.currentTime);
+  };
+}
+
+function loadSettings() {
+  let bookSettings = JSON.parse(localStorage.getItem(currentBook));
+  if (bookSettings) {
+    audioEl.currentTime = bookSettings.currentTime || 0.0;
+    audioEl.volume = bookSettings.volume || 1.0;
+    audioEl.playbackRate = bookSettings.playbackRate || 1.0;
+  }
+  playbackRateEl.innerText = 'X' + audioEl.playbackRate.toFixed(2);
 }
 
 function updateTotalTime() {
@@ -148,6 +145,7 @@ function play() {
   audioEl.volume = 1.0;
   audioEl.play();
   togglePlayEl.innerText = 'PAUSE';
+  clearInterval(progressCheckInterval);
   startProgressCheckInterval();
 }
 
