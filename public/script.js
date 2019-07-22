@@ -7,6 +7,7 @@ const sliderEl = document.getElementById('slider');
 const progressBarEl = document.getElementById('progress-bar');
 const togglePlayEl = document.getElementById('toggle-play');
 const bookListEl = document.getElementById('book-list');
+const offlineEl = document.getElementById('offline');
 const playbackRateEl = document.getElementById('playback-rate');
 const bookInfoEl = document.getElementById('book-info');
 const sleepTimerEl = document.getElementById('sleep-timer');
@@ -21,7 +22,10 @@ let progressCheckInterval;
 function bookbum(resource) {
   return fetch('/' + resource)
     .then(response => response.json())
-    .catch(err => goToLogin());
+    .catch(err => {
+      console.log(err);
+      // goToLogin()
+    });
 }
 
 init();
@@ -29,7 +33,27 @@ init();
 function init() {
   listTitles();
   retrieveCurrentBook();
+  handleOffline();
+  registerServiceWorker();
   audioEl.ontimeupdate = () => updateTime(audioEl.currentTime);
+}
+
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+}
+
+function handleOffline() {
+  offlineEl.style.display = navigator.onLine ? 'none' : 'block';
+  window.addEventListener('offline', function(e) {
+    offlineEl.style.display = 'block';
+  });
+  window.addEventListener('online', function(e) {
+    offlineEl.style.display = 'none';
+  });
 }
 
 function goToLogin() {
@@ -39,7 +63,9 @@ function goToLogin() {
 function retrieveCurrentBook() {
   currentBook = localStorage.getItem('currentBook');
   if (currentBook) {
-    getBookUrl(currentBook).then(() => updateTime(audioEl.currentTime));
+    getBookUrl(currentBook)
+      .then(loadBook)
+      .then(() => updateTime(audioEl.currentTime));
   }
 }
 
@@ -66,7 +92,10 @@ function updateBookSettings() {
 function seek(event) {
   if (previousSeekValue) {
     seekMagnitude += event.touches[0].clientX - previousSeekValue;
-    updateTime(audioEl.currentTime + seekMagnitude * 10);
+    let newTime = audioEl.currentTime + seekMagnitude * 10;
+    newTime = newTime > audioEl.duration ? audioEl.duration : newTime;
+    newTime = newTime < 0 ? 0 : newTime;
+    updateTime(newTime);
     previousSeekValue = event.touches[0].clientX;
   } else {
     seekMagnitude = 0;
@@ -106,14 +135,16 @@ function listTitles() {
 }
 
 function getBookUrl(book) {
-  currentBook = book;
-  localStorage.setItem('currentBook', book);
-  bookInfoEl.innerText = book;
-  return bookbum('book/' + book);
+  return bookbum('book/' + book).then(url => {
+    currentBook = book;
+    localStorage.setItem('currentBook', book);
+    bookInfoEl.innerText = book;
+    return url.url;
+  });
 }
 
 function loadBook(url) {
-  audioEl.src = url.url;
+  audioEl.src = url;
   audioEl.onloadedmetadata = function() {
     loadSettings();
     updateTotalTime();

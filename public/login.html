@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>BOOKBUM</title>
-    <style>
-      form {
-        margin: 0 auto;
-        max-width: 480px;
-      }
 
-      input,
-      button {
-        width: 100%;
-        font-size: 1.2em;
-        padding: 8px;
-        box-sizing: border-box;
-        margin: 4px 0;
-      }
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible"
+        content="ie=edge" />
+  <title>BOOKBUM</title>
+  <style>
+    form {
+      margin: 0 auto;
+      max-width: 480px;
+    }
 
-  <body>
-    <form action="/login" method="POST">
-      <input type="text" name="username" placeholder="NAME" />
-      <br />
-      <input type="password" name="password" placeholder="PASSWORD" />
-      <br />
-      <button type="submit">LOGIN</button>
-    </form>
-  </body>
+    input,
+    button {
+      width: 100%;
+      font-size: 1.2em;
+      padding: 8px;
+      box-sizing: border-box;
+      margin: 4px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <form action="/login"
+        method="POST">
+    <input type="text"
+           name="username"
+           placeholder="NAME" />
+    <br />
+    <input type="password"
+           name="password"
+           placeholder="PASSWORD" />
+    <br />
+    <button type="submit">LOGIN</button>
+  </form>
+</body>
+
 </html>

@@ -1,57 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="msapplication-navbutton-color" content="black" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="msapplication-TileColor" content="#2b5797" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2b5797" />
-    <title>BOOKBUM</title>
-  </head>
 
-  <body>
-    <div id="toolbar" class="row center-align">
-      <h1 class="grow">
-        <img src="/favicon-32x32.png" style="vertical-align:bottom;" />BOOKBUM
-      </h1>
-      <div id="playback-rate" class="button" onclick="changePlaybackRate()">
-        x1.00
-      </div>
-      <div id="sleep-timer" class="button" onclick="toggleSleepTimer()">
-        SLEEP
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="X-UA-Compatible"
+        content="ie=edge" />
+  <meta name="apple-mobile-web-app-capable"
+        content="yes" />
+  <meta name="msapplication-navbutton-color"
+        content="black" />
+  <meta name="apple-mobile-web-app-status-bar-style"
+        content="black" />
+  <meta name="msapplication-TileColor"
+        content="#2b5797" />
+  <meta name="theme-color"
+        content="#000000" />
+  <link rel="preload"
+        as="style"
+        type="text/css"
+        href="style.css" />
+  <link rel="apple-touch-icon"
+        sizes="180x180"
+        href="/apple-touch-icon.png" />
+  <link rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="/favicon-32x32.png" />
+  <link rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href="/favicon-16x16.png" />
+  <link rel="manifest"
+        href="/site.webmanifest" />
+  <link rel="mask-icon"
+        href="/safari-pinned-tab.svg"
+        color="#2b5797" />
+  <title>BOOKBUM</title>
+</head>
+
+<body>
+  <div id="toolbar"
+       class="row center-align">
+    <h1 class="grow">
+      <img src="/favicon-32x32.png"
+           style="vertical-align:bottom;" />BOOKBUM
+    </h1>
+    <div id="playback-rate"
+         class="button"
+         onclick="changePlaybackRate()">
+      x1.00
+    </div>
+    <div id="sleep-timer"
+         class="button"
+         onclick="toggleSleepTimer()">
+      SLEEP
+    </div>
+  </div>
+
+  <div id="book-list"
+       class="grow"></div>
+  <div id="controls">
+    <div id="book-info">No book selected</div>
+    <div id="slider"
+         ontouchmove="seek(event)"
+         ontouchend="stopSeek(event)">
+      <div id="progress-bar"></div>
+      <div class="progress">
+        <span id="current-time">00:00:00</span> /
+        <span id="total-time">00:00:00</span>
       </div>
     </div>
-
-    <div id="book-list" class="grow"></div>
-
-    <div id="controls">
-      <div id="book-info">No book selected</div>
-      <div id="slider" ontouchmove="seek(event)" ontouchend="stopSeek(event)">
-        <div id="progress-bar"></div>
-        <div class="progress">
-          <span id="current-time">00:00:00</span> /
-          <span id="total-time">00:00:00</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="button" onclick="skipBackward()">-10</div>
-        <div class="button" id="toggle-play" onclick="togglePlay()">PLAY</div>
-        <div class="button" onclick="skipForward()">+10</div>
-      </div>
+    <div class="row">
+      <div class="button"
+           onclick="skipBackward()">-10</div>
+      <div class="button"
+           id="toggle-play"
+           onclick="togglePlay()">PLAY</div>
+      <div class="button"
+           onclick="skipForward()">+10</div>
     </div>
+  </div>
+  <div id="offline">offline</div>
 
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
+
 </html>
